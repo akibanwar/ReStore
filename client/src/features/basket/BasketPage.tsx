@@ -7,7 +7,7 @@ import BasketTable from "./BasketTable";
 export default function BasketPage() {
     const { basket } = useAppSelector(state => state.basket);
     const subtotal = basket?.items.reduce((sum, item) => sum + (item.price * item.quantity), 0) ?? 0;
-    const deliveryFee = subtotal > 10000 ? 500 : 0;
+    const deliveryFee = subtotal > 10000 ? 0 : 500;
 
     if (!basket)
         return <Typography variant="h3">Your basket is empty.</Typography>
