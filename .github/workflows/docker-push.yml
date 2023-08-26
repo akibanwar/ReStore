@@ -27,7 +27,7 @@ jobs:
           push: true
           tags: akibanwar/restore:latest
   deploy:
-    need: docker
+    needs: docker
     name: Deploy app
     runs-on: ubuntu-latest
     steps:
