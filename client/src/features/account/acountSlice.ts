@@ -19,7 +19,7 @@ export const signInUser = createAsyncThunk<User, FieldValues>(
     async (data, thunkAPI) => {
         try {
             const userDto = await agent.Account.login(data);
-            const {basket, ...user} = userDto;            
+            const { basket, ...user } = userDto;
             if (basket)
                 thunkAPI.dispatch(setBasket(basket));
             localStorage.setItem('user', JSON.stringify(user));
@@ -36,7 +36,7 @@ export const fetchCurrentUser = createAsyncThunk<User>(
         thunkAPI.dispatch(setUser(JSON.parse(localStorage.getItem('user')!)));
         try {
             const userDto = await agent.Account.currentUser();
-            const {basket, ...user} = userDto;
+            const { basket, ...user } = userDto;
             if (basket)
                 thunkAPI.dispatch(setBasket(basket));
             localStorage.setItem('user', JSON.stringify(user));
@@ -63,7 +63,9 @@ export const accountSlice = createSlice({
             router.navigate('/');
         },
         setUser: (state, action) => {
-            state.user = action.payload;
+            const claims = JSON.parse(atob(action.payload.token.split('.')[1]));
+            const roles = claims['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+            state.user = { ...action.payload, roles: typeof (roles) === 'string' ? [roles] : roles };
         }
     },
     extraReducers: (builder => {
@@ -75,7 +77,9 @@ export const accountSlice = createSlice({
         })
         builder.addMatcher(isAnyOf(signInUser.fulfilled, fetchCurrentUser.fulfilled),
             (state, action) => {
-                state.user = action.payload;
+                const claims = JSON.parse(atob(action.payload.token.split('.')[1]));
+                const roles = claims['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+                state.user = { ...action.payload, roles: typeof (roles) === 'string' ? [roles] : roles };
             });
         builder.addMatcher(isAnyOf(signInUser.rejected),
             (state, action) => {
