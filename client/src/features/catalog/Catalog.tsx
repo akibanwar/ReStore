@@ -16,7 +16,7 @@ const sortOptions = [
 ]
 
 export default function Catalog() {
-    const {products, brands, types, filtersLoaded, productsLoaded, metaData} = useProducts();
+    const {products, brands, types, filtersLoaded, metaData} = useProducts();
     const { productParams } = useAppSelector(state => state.catalog);
     const dispatch = useAppDispatch();    
 

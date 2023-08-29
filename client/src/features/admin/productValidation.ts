@@ -10,7 +10,6 @@ export const validationSchema = yup.object({
     country: yup.string().required(),
     file: yup.mixed().when('pictureUrl', {
         is: (value: string) => !value,
-        then: () => yup.mixed().required('Please provide an image'),
-        // otherwise: () => yup.mixed().notRequired()
+        then: schema => schema.required('Please provide an image')
     })
 });
